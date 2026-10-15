@@ -1,0 +1,61 @@
+{
+  "name": "rexact-mcp",
+  "version": "0.1.2",
+  "mcpName": "io.github.Nicolasmar91/rexact-mcp",
+  "type": "module",
+  "bin": {
+    "rexact-mcp": "./dist/stdio.js"
+  },
+  "scripts": {
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "start:stdio": "node dist/stdio.js",
+    "start:http": "node dist/http.js",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^3.25.76",
+    "@eslint-community/regexpp": "^4.12.2",
+    "recheck": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.0",
+    "@rexact/core": "workspace:*",
+    "@rexact/generate": "workspace:*"
+  },
+  "description": "Serveur MCP Rexact : vérifier, expliquer et auditer (ReDoS, compatibilité multi-moteurs) des regex, hors ligne.",
+  "license": "MIT",
+  "homepage": "https://rexact.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nicolasmar91/rexact-mcp.git",
+    "directory": "apps/mcp"
+  },
+  "author": "Nicolas Marechal (NM Labs)",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "regex",
+    "redos",
+    "regexp",
+    "claude"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/Nicolasmar91/rexact-mcp/issues"
+  }
+}

@@ -1,0 +1,526 @@
+[
+  {
+    "id": "lookahead-password",
+    "description": "mot de passe : au moins une majuscule (lookahead)",
+    "pattern": "^(?=.*[A-Z]).{8,}$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["lookahead"],
+    "corpus": [
+      { "text": "Password", "shouldMatch": true },
+      { "text": "password", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "lookahead-unit-suffix",
+    "description": "nombre suivi de px (lookahead)",
+    "pattern": "\\d+(?=px)",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["lookahead", "digitDefault"],
+    "corpus": [
+      { "text": "10px", "shouldMatch": true },
+      { "text": "10em", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "lookbehind-currency",
+    "description": "montant précédé d'un symbole dollar (lookbehind)",
+    "pattern": "(?<=\\$)\\d+",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["lookbehind", "digitDefault"],
+    "corpus": [
+      { "text": "$100", "shouldMatch": true },
+      { "text": "100", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "neg-lookbehind-currency",
+    "description": "montant non précédé d'un symbole dollar (lookbehind négatif)",
+    "pattern": "(?<!\\$)\\b\\d+\\b",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["negLookbehind", "digitDefault"],
+    "corpus": [
+      { "text": "100", "shouldMatch": true },
+      { "text": "$100", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "backreference-repeated-word",
+    "description": "mot répété deux fois de suite (référence arrière)",
+    "pattern": "\\b(\\w+) \\1\\b",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["backreference"],
+    "corpus": [
+      { "text": "the the cat", "shouldMatch": true },
+      { "text": "the cat", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "named-group-iso-date",
+    "description": "date ISO avec groupes nommés",
+    "pattern": "^(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["namedGroup", "digitDefault"],
+    "corpus": [
+      { "text": "2026-09-03", "shouldMatch": true },
+      { "text": "2026/09/03", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "unicode-property-letters",
+    "description": "une ou plusieurs lettres Unicode",
+    "pattern": "^\\p{L}+$",
+    "flags": "u",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["unicodeProperty"],
+    "corpus": [
+      { "text": "Café", "shouldMatch": true },
+      { "text": "abc123", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "unicode-sets-consonants",
+    "description": "consonnes via soustraction de classes (drapeau v)",
+    "pattern": "^[[a-z]--[aeiou]]+$",
+    "flags": "v",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["unicodeSets"],
+    "corpus": [
+      { "text": "bcdfg", "shouldMatch": true },
+      { "text": "bcdfa", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "lazy-quantifier-html-tag",
+    "description": "balise HTML, quantificateur paresseux",
+    "pattern": "<.+?>",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["lazyQuantifier"],
+    "corpus": [
+      { "text": "<a><b>", "shouldMatch": true },
+      { "text": "no tag here", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "nested-quantifier-redos",
+    "description": "quantificateur imbriqué, ReDoS classique",
+    "pattern": "^(a+)+$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["nestedQuantifier"],
+    "expectVulnerable": true,
+    "corpus": [
+      { "text": "aaaa", "shouldMatch": true },
+      { "text": "aaab", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "digit-default-phone",
+    "description": "numéro à séparateurs, ASCII vs Unicode par défaut selon le moteur",
+    "pattern": "^\\d{3}-\\d{4}$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "555-1234", "shouldMatch": true },
+      { "text": "555 1234", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "atomic-group-unsupported-in-js",
+    "description": "groupe atomique PCRE, pas de syntaxe JS équivalente",
+    "pattern": "(?>a+)b",
+    "flags": "",
+    "flavor": "pcre",
+    "shouldParse": false,
+    "expectedFeatures": [],
+    "targetFeature": "atomicGroup",
+    "corpus": []
+  },
+  {
+    "id": "possessive-quantifier-unsupported-in-js",
+    "description": "quantificateur possessif PCRE, pas de syntaxe JS équivalente",
+    "pattern": "a++b",
+    "flags": "",
+    "flavor": "pcre",
+    "shouldParse": false,
+    "expectedFeatures": [],
+    "targetFeature": "possessive",
+    "corpus": []
+  },
+  {
+    "id": "recursion-unsupported-in-js",
+    "description": "récursion PCRE (?R), pas de syntaxe JS équivalente",
+    "pattern": "\\((?R)?\\)",
+    "flags": "",
+    "flavor": "pcre",
+    "shouldParse": false,
+    "expectedFeatures": [],
+    "targetFeature": "recursion",
+    "corpus": []
+  },
+  {
+    "id": "conditional-unsupported-in-js",
+    "description": "motif conditionnel PCRE, pas de syntaxe JS équivalente",
+    "pattern": "(a)?(?(1)b|c)",
+    "flags": "",
+    "flavor": "pcre",
+    "shouldParse": false,
+    "expectedFeatures": [],
+    "targetFeature": "conditional",
+    "corpus": []
+  },
+  {
+    "id": "inline-flags-unsupported-in-js",
+    "description": "drapeau en ligne (?i), pas de syntaxe JS équivalente",
+    "pattern": "(?i)abc",
+    "flags": "",
+    "flavor": "python",
+    "shouldParse": false,
+    "expectedFeatures": [],
+    "targetFeature": "inlineFlags",
+    "corpus": []
+  },
+  {
+    "id": "email-basic",
+    "description": "adresse email simple",
+    "pattern": "^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "a@b.com", "shouldMatch": true },
+      { "text": "not-an-email", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "url-basic",
+    "description": "URL http(s) simple",
+    "pattern": "^https?://[\\w.-]+(?:/[\\w./-]*)?$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "https://example.com/path", "shouldMatch": true },
+      { "text": "ftp://example.com", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "ipv4",
+    "description": "adresse IPv4 (forme, pas la plage 0-255)",
+    "pattern": "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "192.168.0.1", "shouldMatch": true },
+      { "text": "192.168.0", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "uuid-v4",
+    "description": "UUID version 4",
+    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+    "flags": "i",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "550e8400-e29b-41d4-a716-446655440000", "shouldMatch": true },
+      { "text": "not-a-uuid", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "hex-color",
+    "description": "couleur hexadécimale CSS",
+    "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "#fff", "shouldMatch": true },
+      { "text": "#ffff", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "slug",
+    "description": "slug d'URL (minuscules, tirets)",
+    "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "mon-super-article-2026", "shouldMatch": true },
+      { "text": "Mon Article", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "semver",
+    "description": "version sémantique",
+    "pattern": "^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["namedGroup", "digitDefault"],
+    "corpus": [
+      { "text": "1.4.2", "shouldMatch": true },
+      { "text": "1.4", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "iso-timestamp",
+    "description": "horodatage ISO 8601",
+    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "2026-09-03T12:00:00Z", "shouldMatch": true },
+      { "text": "2026-09-03 12:00:00", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "time-hh-mm",
+    "description": "heure HH:MM (24h)",
+    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "23:59", "shouldMatch": true },
+      { "text": "24:00", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "integer-signed",
+    "description": "entier signé",
+    "pattern": "^[+-]?\\d+$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "-42", "shouldMatch": true },
+      { "text": "4.2", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "decimal-number",
+    "description": "nombre décimal",
+    "pattern": "^\\d+\\.\\d+$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "3.14", "shouldMatch": true },
+      { "text": "3", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "word-boundary-cat",
+    "description": "le mot exact « cat », pas « category »",
+    "pattern": "\\bcat\\b",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "the cat sat", "shouldMatch": true },
+      { "text": "category", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "case-insensitive-greeting",
+    "description": "salutation, insensible à la casse",
+    "pattern": "^hello$",
+    "flags": "i",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "HELLO", "shouldMatch": true },
+      { "text": "goodbye", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "multiline-start-of-line",
+    "description": "début de ligne en mode multiligne",
+    "pattern": "^b",
+    "flags": "m",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "a\nb", "shouldMatch": true },
+      { "text": "ab", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "dotall-any-char",
+    "description": ". couvre aussi les retours à la ligne (drapeau s)",
+    "pattern": "a.b",
+    "flags": "s",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "a\nb", "shouldMatch": true },
+      { "text": "ac", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "global-all-digits",
+    "description": "tous les nombres d'une chaîne (drapeau g)",
+    "pattern": "\\d+",
+    "flags": "g",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["digitDefault"],
+    "corpus": [
+      { "text": "a1 b22 c333", "shouldMatch": true },
+      { "text": "no digits", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "alternation-cat-dog",
+    "description": "chat ou chien",
+    "pattern": "^(cat|dog)$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "cat", "shouldMatch": true },
+      { "text": "bird", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "non-capturing-group",
+    "description": "groupe non capturant",
+    "pattern": "^(?:ab)+$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "abab", "shouldMatch": true },
+      { "text": "aba", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "trim-whitespace",
+    "description": "espaces en début/fin de chaîne",
+    "pattern": "^\\s+|\\s+$",
+    "flags": "g",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "  padded  ", "shouldMatch": true },
+      { "text": "clean", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "quoted-string-content",
+    "description": "contenu entre guillemets doubles (paresseux)",
+    "pattern": "\"(.*?)\"",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["lazyQuantifier"],
+    "corpus": [
+      { "text": "say \"hello\" now", "shouldMatch": true },
+      { "text": "no quotes", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "css-class-name",
+    "description": "nom de classe CSS",
+    "pattern": "^\\.[a-zA-Z][\\w-]*$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": ".btn-primary", "shouldMatch": true },
+      { "text": "btn-primary", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "file-extension",
+    "description": "extension de fichier",
+    "pattern": "\\.(?<ext>[a-zA-Z0-9]+)$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": ["namedGroup"],
+    "corpus": [
+      { "text": "archive.tar.gz", "shouldMatch": true },
+      { "text": "no-extension", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "git-short-hash",
+    "description": "hash Git court",
+    "pattern": "^[0-9a-f]{7,40}$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "a1b2c3d", "shouldMatch": true },
+      { "text": "xyz", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "ambiguous-alternation-redos",
+    "description": "alternance chevauchante sous quantificateur (ReDoS)",
+    "pattern": "^(a|a)*$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "aaaa", "shouldMatch": true },
+      { "text": "aaab", "shouldMatch": false }
+    ]
+  },
+  {
+    "id": "adjacent-quantifiers-redos",
+    "description": "quantificateurs adjacents ambigus (ReDoS)",
+    "pattern": "^a*a*$",
+    "flags": "",
+    "flavor": "js",
+    "shouldParse": true,
+    "expectedFeatures": [],
+    "corpus": [
+      { "text": "aaaa", "shouldMatch": true },
+      { "text": "aaab", "shouldMatch": false }
+    ]
+  }
+]

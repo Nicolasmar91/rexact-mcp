@@ -1,0 +1,31 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Nicolasmar91/rexact-mcp",
+  "title": "Rexact",
+  "description": "Verify, explain and audit regexes (ReDoS, engine compatibility) offline.",
+  "websiteUrl": "https://rexact.dev/en/mcp",
+  "repository": {
+    "url": "https://github.com/Nicolasmar91/rexact-mcp",
+    "source": "github",
+    "subfolder": "apps/mcp"
+  },
+  "version": "0.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "rexact-mcp",
+      "version": "0.1.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "description": "Optional. Only needed by the generate_regex tool; the four other tools work offline without it.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
